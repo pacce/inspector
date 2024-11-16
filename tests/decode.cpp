@@ -5,24 +5,63 @@
 namespace qi = boost::spirit::qi;
 
 TEST(DIGIT, MONTH) {
+    inspector::date::digitp<std::string::iterator> decoder;
+    for (inspector::date::Digit expected = 0; expected <= 99; expected++) {
+        std::string payload = std::format("{:02}", expected);
+
+        inspector::date::Digit actual;
+        ASSERT_TRUE(qi::parse(payload.begin(), payload.end(), decoder, actual));
+        EXPECT_EQ(actual, expected);
+    }
+}
+
+TEST(YEAR, DECODE) {
     struct Experiment {
         std::string             payload;
-        inspector::date::Digit  expected;
+        inspector::date::Year   expected;
     };
 
     std::vector<Experiment> experiments = {
-          {"01",  1}, {"02",  2}, {"03",  3}, {"04",  4}, {"05",  5}, {"06",  6}, {"07",  7}
-        , {"08",  8}, {"09",  9}, {"10", 10}, {"11", 11}, {"12", 12}, {"13", 13}, {"14", 14}
-        , {"15", 15}, {"16", 16}, {"17", 17}, {"18", 18}, {"19", 19}, {"20", 20}, {"21", 21}
-        , {"22", 22}, {"23", 23}, {"24", 24}, {"25", 25}, {"26", 26}, {"27", 27}, {"28", 28}
-        , {"29", 29}, {"30", 30}, {"31", 31}
+          {"01", inspector::date::Year{ 1}}
+        , {"02", inspector::date::Year{ 2}}
+        , {"03", inspector::date::Year{ 3}}
+        , {"04", inspector::date::Year{ 4}}
+        , {"05", inspector::date::Year{ 5}}
+        , {"06", inspector::date::Year{ 6}}
+        , {"07", inspector::date::Year{ 7}}
+        , {"08", inspector::date::Year{ 8}}
+        , {"09", inspector::date::Year{ 9}}
+        , {"10", inspector::date::Year{10}}
+
+        , {"11", inspector::date::Year{11}}
+        , {"12", inspector::date::Year{12}}
+        , {"13", inspector::date::Year{13}}
+        , {"14", inspector::date::Year{14}}
+        , {"15", inspector::date::Year{15}}
+        , {"16", inspector::date::Year{16}}
+        , {"17", inspector::date::Year{17}}
+        , {"18", inspector::date::Year{18}}
+        , {"19", inspector::date::Year{19}}
+        , {"20", inspector::date::Year{20}}
+
+        , {"21", inspector::date::Year{21}}
+        , {"22", inspector::date::Year{22}}
+        , {"23", inspector::date::Year{23}}
+        , {"24", inspector::date::Year{24}}
+        , {"25", inspector::date::Year{25}}
+        , {"26", inspector::date::Year{26}}
+        , {"27", inspector::date::Year{27}}
+        , {"28", inspector::date::Year{28}}
+        , {"29", inspector::date::Year{29}}
+        , {"30", inspector::date::Year{30}}
     };
-    inspector::date::digitp<std::string::const_iterator> decoder;
+    inspector::date::yearp<std::string::const_iterator> decoder;
     for (const Experiment& experiment : experiments) {
         const std::string& payload              = experiment.payload;
-        const inspector::date::Digit& expected  = experiment.expected;
+        const inspector::date::Year& expected   = experiment.expected;
 
-        inspector::date::Digit actual;
+        inspector::date::Year actual;
+
         ASSERT_TRUE(qi::parse(payload.begin(), payload.end(), decoder, actual));
         EXPECT_EQ(actual, expected);
     }

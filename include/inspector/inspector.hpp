@@ -25,13 +25,15 @@ namespace date {
         qi::rule<Iterator, Digit> rule;
     };
 
-    // template <typename Iterator>
-    // struct yearp : qi::grammar<Iterator, Year> {
-    //     yearp() : yearp::base_type(rule) {
-    //     }
+    template <typename Iterator>
+    struct yearp : qi::grammar<Iterator, Year> {
+        yearp() : yearp::base_type(rule) {
+            rule = digit;
+        }
 
-    //     qi::rule<Iterator, Year> rule;
-    // };
+        digitp<Iterator>            digit;
+        qi::rule<Iterator, Year>    rule;
+    };
 
     template <typename Iterator>
     struct monthp : qi::grammar<Iterator, Month> {
