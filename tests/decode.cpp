@@ -4,7 +4,7 @@
 
 namespace qi = boost::spirit::qi;
 
-TEST(DIGIT, MONTH) {
+TEST(DIGIT, DECODE) {
     inspector::date::digitp<std::string::iterator> decoder;
     for (inspector::date::Digit expected = 0; expected <= 99; expected++) {
         std::string payload = std::format("{:02}", expected);
@@ -147,6 +147,45 @@ TEST(DAY, DECODE) {
         const inspector::date::Day& expected    = experiment.expected;
 
         inspector::date::Day actual;
+
+        ASSERT_TRUE(qi::parse(payload.begin(), payload.end(), decoder, actual));
+        EXPECT_EQ(actual, expected);
+    }
+}
+
+TEST(HOURS, DECODE) {
+    inspector::date::hoursp<std::string::iterator> decoder;
+    for (inspector::date::Digit i = 0; i < 24; i++) {
+        std::string payload = std::format("{:02}", i);
+
+        inspector::date::Hours actual;
+        inspector::date::Hours expected{i};
+
+        ASSERT_TRUE(qi::parse(payload.begin(), payload.end(), decoder, actual));
+        EXPECT_EQ(actual, expected);
+    }
+}
+
+TEST(MINUTES, DECODE) {
+    inspector::date::minutesp<std::string::iterator> decoder;
+    for (inspector::date::Digit i = 0; i < 60; i++) {
+        std::string payload = std::format("{:02}", i);
+
+        inspector::date::Minutes actual;
+        inspector::date::Minutes expected{i};
+
+        ASSERT_TRUE(qi::parse(payload.begin(), payload.end(), decoder, actual));
+        EXPECT_EQ(actual, expected);
+    }
+}
+
+TEST(SECONDS, DECODE) {
+    inspector::date::secondsp<std::string::iterator> decoder;
+    for (inspector::date::Digit i = 0; i < 60; i++) {
+        std::string payload = std::format("{:02}", i);
+
+        inspector::date::Seconds actual;
+        inspector::date::Seconds expected{i};
 
         ASSERT_TRUE(qi::parse(payload.begin(), payload.end(), decoder, actual));
         EXPECT_EQ(actual, expected);

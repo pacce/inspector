@@ -54,9 +54,42 @@ namespace date {
         digitp<Iterator>        digit;
         qi::rule<Iterator, Day> rule;
     };
-} // namespace date
-    struct Date {};
-    struct Name {};
-} // namespace inspector
 
-#endif // INSPECTOR_HPP__
+    template <typename Iterator>
+    struct hoursp : qi::grammar<Iterator, Hours> {
+        hoursp() : hoursp::base_type(rule) {
+            rule = digit;
+        }
+
+        digitp<Iterator>            digit;
+        qi::rule<Iterator, Hours>   rule;
+    };
+
+    template <typename Iterator>
+    struct minutesp : qi::grammar<Iterator, Minutes> {
+        minutesp() : minutesp::base_type(rule) {
+            rule = digit;
+        }
+
+        digitp<Iterator>            digit;
+        qi::rule<Iterator, Minutes> rule;
+    };
+
+    template <typename Iterator>
+    struct secondsp : qi::grammar<Iterator, Seconds> {
+        secondsp() : secondsp::base_type(rule) {
+            rule = digit;
+        }
+
+        digitp<Iterator>            digit;
+        qi::rule<Iterator, Seconds> rule;
+    };
+ } // namespace date
+     struct Date {};
+     struct Name {};
+ } // namespace inspector
+ 
+ #endif // INSPECTOR_HPP__
+ 
+ 
+ 
