@@ -44,6 +44,16 @@ namespace date {
         digitp<Iterator>            digit;
         qi::rule<Iterator, Month>   rule;
     };
+    
+    template <typename Iterator>
+    struct dayp : qi::grammar<Iterator, Day> {
+        dayp() : dayp::base_type(rule) {
+            rule = digit;
+        }
+
+        digitp<Iterator>        digit;
+        qi::rule<Iterator, Day> rule;
+    };
 } // namespace date
     struct Date {};
     struct Name {};
