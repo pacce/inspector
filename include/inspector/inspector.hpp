@@ -7,7 +7,7 @@
 namespace inspector {
     namespace qi = boost::spirit::qi;
 namespace date {
-    using Digit = std::uint8_t;
+    using Digit = std::uint16_t;
     using Year  = std::chrono::year;
     using Month = std::chrono::month;
     using Day   = std::chrono::day;
@@ -15,11 +15,32 @@ namespace date {
     using Hours     = std::chrono::hours;
     using Minutes   = std::chrono::minutes;
     using Seconds   = std::chrono::seconds;
+} // namespace date
+    struct Date {
+        date::Day   day;
+        date::Month month;
+        date::Year  year;
 
-    template <typename Iterator>
+        date::Hours     hours;
+        date::Minutes   minutes;
+    };
+} // namespace inspector
+
+BOOST_FUSION_ADAPT_STRUCT(
+        inspector::Date,
+        (inspector::date::Day,      day)
+        (inspector::date::Month,    month)
+        (inspector::date::Year,     year)
+        (inspector::date::Hours,    hours)
+        (inspector::date::Minutes,  minutes)
+        );
+
+namespace inspector {
+namespace date {
+    template <typename Iterator, int N>
     struct digitp : qi::grammar<Iterator, Digit> {
         digitp() : digitp::base_type(rule) {
-            rule = qi::int_parser<Digit, 10, 2, 2>();
+            rule = qi::int_parser<Digit, 10, N, N>();
         }
 
         qi::rule<Iterator, Digit> rule;
@@ -31,7 +52,7 @@ namespace date {
             rule = digit;
         }
 
-        digitp<Iterator>            digit;
+        digitp<Iterator, 4>         digit;
         qi::rule<Iterator, Year>    rule;
     };
 
@@ -41,7 +62,7 @@ namespace date {
             rule = digit;
         }
 
-        digitp<Iterator>            digit;
+        digitp<Iterator, 2>         digit;
         qi::rule<Iterator, Month>   rule;
     };
     
@@ -51,7 +72,7 @@ namespace date {
             rule = digit;
         }
 
-        digitp<Iterator>        digit;
+        digitp<Iterator, 2>     digit;
         qi::rule<Iterator, Day> rule;
     };
 
@@ -61,7 +82,7 @@ namespace date {
             rule = digit;
         }
 
-        digitp<Iterator>            digit;
+        digitp<Iterator, 2>         digit;
         qi::rule<Iterator, Hours>   rule;
     };
 
@@ -71,7 +92,7 @@ namespace date {
             rule = digit;
         }
 
-        digitp<Iterator>            digit;
+        digitp<Iterator, 2>         digit;
         qi::rule<Iterator, Minutes> rule;
     };
 
@@ -81,12 +102,35 @@ namespace date {
             rule = digit;
         }
 
-        digitp<Iterator>            digit;
+        digitp<Iterator, 2>         digit;
         qi::rule<Iterator, Seconds> rule;
     };
+
+    template <typename Iterator>
+    struct datep : qi::grammar<Iterator, Date> {
+        datep() : datep::base_type(rule) {
+            rule = day 
+                >> "/" 
+                >> month 
+                >> "/" 
+                >> year
+                >> " "
+                >> hours
+                >> ":"
+                >> minutes
+                ;
+        }
+
+        date::dayp<Iterator>    day;
+        date::monthp<Iterator>  month;
+        date::yearp<Iterator>   year;
+
+        date::hoursp<Iterator>      hours;
+        date::minutesp<Iterator>    minutes;
+
+        qi::rule<Iterator, Date>    rule;
+    };
  } // namespace date
-     struct Date {};
-     struct Name {};
  } // namespace inspector
  
  #endif // INSPECTOR_HPP__
