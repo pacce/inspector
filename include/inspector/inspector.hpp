@@ -17,12 +17,49 @@ namespace date {
     using Seconds   = std::chrono::seconds;
 } // namespace date
     struct Date {
-        date::Day   day;
-        date::Month month;
         date::Year  year;
+        date::Month month;
+        date::Day   day;
 
         date::Hours     hours;
         date::Minutes   minutes;
+
+        friend std::strong_ordering
+        operator<=>(const Date& lhs, const Date& rhs) noexcept {
+            if (lhs.year > rhs.year) {
+                return std::strong_ordering::greater;
+            } else if (lhs.year < rhs.year) {
+                return std::strong_ordering::less;
+            } else if (lhs.month > rhs.month) {
+                return std::strong_ordering::greater;
+            } else if (lhs.month < rhs.month) {
+                return std::strong_ordering::less;
+            } else if (lhs.day > rhs.day) {
+                return std::strong_ordering::greater;
+            } else if (lhs.day < rhs.day) {
+                return std::strong_ordering::less;
+            } else if (lhs.hours > rhs.hours) {
+                return std::strong_ordering::greater;
+            } else if (lhs.hours < rhs.hours) {
+                return std::strong_ordering::less;
+            } else if (lhs.minutes > rhs.minutes) {
+                return std::strong_ordering::greater;
+            } else if (lhs.minutes < rhs.minutes) {
+                return std::strong_ordering::less;
+            } else {
+                return std::strong_ordering::equal;
+            }
+        }
+
+        friend bool
+        operator==(const Date& lhs, const Date& rhs) noexcept {
+            return (lhs <=> rhs) == std::strong_ordering::equal;
+        }
+
+        friend bool
+        operator!=(const Date& lhs, const Date& rhs) noexcept {
+            return (lhs <=> rhs) != std::strong_ordering::equal;
+        }
     };
 } // namespace inspector
 
@@ -65,7 +102,7 @@ namespace date {
         digitp<Iterator, 2>         digit;
         qi::rule<Iterator, Month>   rule;
     };
-    
+
     template <typename Iterator>
     struct dayp : qi::grammar<Iterator, Day> {
         dayp() : dayp::base_type(rule) {
@@ -109,10 +146,10 @@ namespace date {
     template <typename Iterator>
     struct datep : qi::grammar<Iterator, Date> {
         datep() : datep::base_type(rule) {
-            rule = day 
-                >> "/" 
-                >> month 
-                >> "/" 
+            rule = day
+                >> "/"
+                >> month
+                >> "/"
                 >> year
                 >> " "
                 >> hours
@@ -132,8 +169,5 @@ namespace date {
     };
  } // namespace date
  } // namespace inspector
- 
+
  #endif // INSPECTOR_HPP__
- 
- 
- 

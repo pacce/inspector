@@ -199,9 +199,9 @@ TEST(DATE, DECODE) {
         inspector::Date expected;
     };
     std::vector<Experiment> experiments = {
-          {"19/03/2023 22:11", {Day{19}, Month{3}, Year{2023}, Hours{22}, Minutes{11}}}
-        , {"20/03/2023 13:10", {Day{20}, Month{3}, Year{2023}, Hours{13}, Minutes{10}}}
-        , {"05/06/2023 01:04", {Day{05}, Month{6}, Year{2023}, Hours{01}, Minutes{04}}}
+          {"19/03/2023 22:11", {Year{2023}, Month{3}, Day{19}, Hours{22}, Minutes{11}}}
+        , {"20/03/2023 13:10", {Year{2023}, Month{3}, Day{20}, Hours{13}, Minutes{10}}}
+        , {"05/06/2023 01:04", {Year{2023}, Month{6}, Day{ 5}, Hours{ 1}, Minutes{ 4}}}
     };
 
     inspector::date::datep<std::string::const_iterator> decoder;
@@ -218,6 +218,8 @@ TEST(DATE, DECODE) {
         EXPECT_EQ(   actual.year,    expected.year);
         EXPECT_EQ(  actual.hours,   expected.hours);
         EXPECT_EQ(actual.minutes, expected.minutes);
+
+        EXPECT_EQ(actual, expected);
     }
 }
 
